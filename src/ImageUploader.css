@@ -1,0 +1,381 @@
+/* Layout root: take full viewport height, no scroll */
+body, #root, .App {
+  min-height: 100vh;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.uploaderContainer {
+  background: #f8f9fa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 2em 2em 1.5em 2em;
+  max-width: 420px;
+  width: 100%;
+  margin: 0 auto;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+
+.previewContainer {
+  background: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  box-shadow: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 0;
+  width: 100%;
+  max-width: 350px;
+  margin-left: auto;
+  margin-right: auto;
+  z-index: 1;
+}
+
+.previewImage {
+  max-width: 100%;
+  height: auto;
+  width: auto;
+  max-height: 70vh;
+  object-fit: contain;
+  /* border-radius: 8px; */
+  /* box-shadow: 0 2px 8px rgba(0,0,0,0.08); */
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1em;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  min-width: 200px;
+  margin: 0 auto;
+}
+
+.buttonGroup button {
+  padding: 0.75em 1.5em;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  background: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  min-width: 100px;
+  outline: none;
+}
+.buttonGroup button:active,
+.buttonGroup button:focus {
+  background: #0056b3;
+}
+.buttonGroup button:first-child {
+  background: #28a745;
+}
+.buttonGroup button:first-child:active,
+.buttonGroup button:first-child:focus,
+.buttonGroup button:first-child:hover {
+  background: #218838;
+}
+
+.dropFileArea {
+  border: 1px dashed #ccc;
+  border-radius: 5px;
+  padding: 50px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.dropFileAreaContent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.uploadIcon
+ {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.dropFileArea:hover .uploadIcon
+ {
+  opacity: 1;
+}
+
+.dropFileArea.active {
+  border-color: #007bff;
+}
+
+.spinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border-left-color: #007bff;
+  animation: spin 1s ease infinite;
+  margin: 0 auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.errorMessage 
+ {
+  color: #e53e3e;
+  margin-top: 1rem;
+}
+
+/* .previewContainer {
+  margin-top: 2rem;
+  text-align: center;
+} */
+
+/* .previewImage {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+} */
+
+/* .buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+} */
+
+/* .uploadInfo  {
+  font-size: 0.875rem;
+  color: #888;
+  margin-top: 1rem;
+} */
+
+.loadingBarContainer {
+  width: 100%;
+  height: 6px;
+  background: transparent;
+  overflow: hidden;
+  border-radius: 3px;
+  margin-top: 0.5rem;
+}
+
+.loadingBar{
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, #007bff 25%, #66b3ff 50%, #007bff 75%);
+  background-size: 200% 100%;
+  animation: loading-bar-move 1.5s linear infinite alternate;
+  border-radius: 3px;
+}
+
+@keyframes loading-bar-move {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.responsive-preview-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: center;
+  margin-top: 3.5rem;
+  width: 100%;
+}
+.preview-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.preview-actions .buttonGroup {
+  margin-bottom: 0.1rem !important;
+}
+.preview-actions .browse-link:hover {
+text-decoration: underline;
+}
+
+
+@media (max-width: 600px) {
+  html, body, #root, .App {
+    overflow-x: hidden;
+    width: 100vw;
+  }
+  
+  /* main {
+    width: 100vw;
+    overflow-x: hidden;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  } */
+
+  main {
+    justify-content: flex-start !important;
+    margin: 20px;
+  }
+
+  .uploaderContainer {
+    /* background-color: red; */
+    margin-right: 0px;
+    box-sizing: border-box;
+    /* width: 100vw; */
+    max-width: 320px;
+    margin: 0;
+    border-radius: 3px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+    margin-top: 20px;
+  }
+  .previewContainer {
+    margin-top: 0.5rem;
+    max-width: 100vw;
+    width: 100vw;
+    padding: 0 0.5em;
+    gap: 0.7rem;
+  }
+  .previewImage {
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    max-height: 50vh;
+    margin-bottom: 0.4rem;
+  }
+  .buttonGroup {
+    width: 100%;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.7em;
+    align-items: stretch;
+  }
+  .buttonGroup button {
+    margin-right: 2em;
+    margin-left: 2em;
+    width: 160px;
+    max-width: 90vw;
+    min-width: 100px;
+    align-self: center;
+  }
+  .responsive-preview-layout {
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2.5rem;
+    width: 100vw;
+    max-width: 100vw;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-x: hidden;
+  }
+  .preview-actions {
+    margin-left: 0;
+    margin-bottom: 0.5rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .buttonGroup {
+    width: 100%;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.7em;
+    align-items: stretch;
+  }
+}
+
+
+/* @media (min-width: 601px) {
+  .uploaderContainer {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+} */
+
+.dropFileAreaContent p {
+  color: #213547;
+  margin: 0.5em 0 0 0;
+  font-size: 1em;
+  text-align: center;
+}
+
+body[data-theme='dark'] .dropFileAreaContent p,
+body[data-theme='dark'] .dropFileAreaContent .browseLink {
+  color: #fff;
+}
+
+body[data-theme='dark'] .uploaderContainer {
+  background: #242424;
+}
+
+.previewContainer .browse-link {
+  display: inline-block;
+  margin-top: 1.2rem;
+  font-size: 1.08rem;
+  color: #007bff !important;
+  text-decoration: underline;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.previewContainer .browse-link:hover,
+.previewContainer .browse-link:focus {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+body[data-theme='dark'] .previewContainer .browse-link,
+body[data-theme='dark'] .responsive-preview-layout .browse-link {
+  color: #fff !important;
+}
+
+.browse-link {
+  color: #007bff !important;
+}

@@ -1,0 +1,136 @@
+.App {
+  text-align: center;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0 1rem 2rem;
+  /* background-color: var(--header-background-color); */
+  /* color: var(--header-text-color); */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+  width: 100%;
+  border-bottom: 0.2px solid #fff;
+}
+
+.title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 10px;
+}
+
+.logo {
+  height: 40px;
+}
+
+.themeToggle {
+  padding: 0;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+  margin-left: auto;
+  width: 32px;
+  height: 32px;
+  margin-right: 25px;
+}
+
+.themeToggle:hover {
+  transform: scale(1.1);
+}
+
+.themeToggleIconBox {
+  width: 36px;
+  height: 36px;
+  background: #fff;
+  display: flex;
+  padding: 3px 6px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  /* margin: 0 4px; */
+}
+
+.themeToggleIcon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+/* body[data-theme='dark'] .themeToggleIcon {
+  filter: brightness(0) invert(1); 
+} */
+
+@media (max-width: 600px) {
+
+  .logo {
+    height: 25px;
+    padding-left: 15px;;
+  }
+
+  .header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    width: 100%;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem 0.75rem 0.75rem;
+    position: relative;
+    padding: 0.75rem 0 0.75rem 0.75rem;
+  }
+
+  .title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0;
+    gap: 0.25rem;
+  }
+
+  h1 {
+    font-size: 0.9rem;
+    margin: 0;
+    white-space: nowrap;
+  }
+    
+  .themeToggle {
+    padding: 0;
+    margin: 0;
+    width: 28px;
+    height: 28px;
+    position: absolute;
+    right: 25px;
+  }
+  
+  .themeToggleIcon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* @media (max-width: 600px) {
+  .logo {
+    height: 25px;
+    padding-left: 15px;;
+  }
+  .title {
+    gap: 0.25rem;
+  }
+  .header {
+    padding: 0.75rem 1rem 0.75rem 0.75rem;
+  }
+} */
+
+
+
