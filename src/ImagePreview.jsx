@@ -17,7 +17,7 @@ const ImagePreview = () => {
   return (
     <div className="responsive-preview-layout">
       <img
-        src={`http://localhost:3001${uploadedFile.url}`}
+        src={uploadedFile.url}
         alt="Uploaded preview"
         className="previewImage"
         style={{marginTop: '2px', marginBottom: '1rem', width: '80%', height: 'auto', maxWidth: '400px'}}
@@ -25,15 +25,15 @@ const ImagePreview = () => {
       <div className="preview-actions">
         <div className="buttonGroup" style={{marginBottom: '1.2rem'}}>
           <button onClick={() => {
-            const url = `http://localhost:3001${uploadedFile.url}`;
-            navigator.clipboard.writeText(url)
-              .then(() => alert('URL copied to clipboard!'))
+            // For data URLs, we can't share a direct link, so we'll copy the data URL
+            navigator.clipboard.writeText(uploadedFile.url)
+              .then(() => alert('Image data URL copied to clipboard!'))
               .catch(err => console.error('Failed to copy URL: ', err));
           }}>Share</button>
           <button onClick={() => {
             const link = document.createElement('a');
-            link.href = `http://localhost:3001${uploadedFile.url}`;
-            link.download = uploadedFile.url.split('/').pop();
+            link.href = uploadedFile.url;
+            link.download = uploadedFile.filename || 'uploaded-image';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

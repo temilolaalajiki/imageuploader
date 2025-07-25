@@ -5,40 +5,74 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const port = 3001;
 
-// Ensure the uploads directory exists
-const uploadsDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir);
-}
+// Configure CORS for production
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://imageuploader-pied.vercel.app', 'https://your-custom-domain.com', process.env.FRONTEND_URL] 
+    : ['http://localhost:5173', 'http://localhost:3000'],
+  credentials: true
+}));
 
-app.use(cors());
-app.use('/uploads', express.static(uploadsDir));
+// Use memory storage for Vercel (temporary solution)
+// In production, you should use cloud storage like AWS S3, Cloudinary, etc.
+const storage = multer.memoryStorage();
 
-// Set up Multer for file storage
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadsDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `${Date.now()}-${file.originalname}`);
-  },
+const upload = multer({ 
+  storage,
+  limits: {
+    fileSize: 2 * 1024 * 1024, // 2MB limit
+  }
 });
-
-const upload = multer({ storage });
 
 // Route for file upload
 app.post('/upload', upload.single('image'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send('No file uploaded.');
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded.' });
+    }
+
+    // For now, we'll return the file data as base64
+    // In production, you should upload to cloud storage
+    const fileBuffer = req.file.buffer;
+    const base64Data = fileBuffer.toString('base64');
+    const mimeType = req.file.mimetype;
+    
+    // Create a data URL
+    const dataUrl = `data:${mimeType};base64,${base64Data}`;
+    
+    res.json({
+      message: 'File uploaded successfully',
+      url: dataUrl,
+      filename: req.file.originalname,
+      size: req.file.size
+    });
+  } catch (error) {
+    console.error('Upload error:', error);
+    res.status(500).json({ error: 'An error occurred during upload.' });
   }
-  res.json({
-    message: 'File uploaded successfully',
-    url: `/uploads/${req.file.filename}`,
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// Test endpoint
+app.get('/test', (req, res) => {
+  res.json({ 
+    message: 'API is working!',
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
   });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+// Handle serverless environment
+if (process.env.NODE_ENV !== 'production') {
+  const port = process.env.PORT || 3001;
+  app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+  });
+}
+
+module.exports = app;

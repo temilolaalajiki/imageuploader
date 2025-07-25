@@ -11,6 +11,9 @@ const ImageUploader = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
+  // Get API URL from environment variable or use localhost for development
+  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
     setError(null);
 
@@ -27,18 +30,19 @@ const ImageUploader = () => {
       const formData = new FormData();
       formData.append('image', file);
 
-      axios.post('http://localhost:3001/upload', formData)
+      axios.post(`${API_BASE_URL}/upload`, formData)
         .then(response => {
           setUploadedFile(response.data);
           setLoading(false);
           navigate('/preview', { state: { uploadedFile: response.data } });
         })
         .catch(err => {
+          console.error('Upload error:', err);
           setError('An error occurred during the upload.');
           setLoading(false);
         });
     }
-  }, [navigate]);
+  }, [navigate, API_BASE_URL]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -52,9 +56,9 @@ const ImageUploader = () => {
 
   const handleShare = () => {
     if (uploadedFile) {
-      const url = `http://localhost:3001${uploadedFile.url}`;
-      navigator.clipboard.writeText(url)
-        .then(() => alert('URL copied to clipboard!'))
+      // For data URLs, we can't share a direct link, so we'll copy the data URL
+      navigator.clipboard.writeText(uploadedFile.url)
+        .then(() => alert('Image data URL copied to clipboard!'))
         .catch(err => console.error('Failed to copy URL: ', err));
     }
   };
@@ -62,8 +66,8 @@ const ImageUploader = () => {
   const handleDownload = () => {
     if (uploadedFile) {
       const link = document.createElement('a');
-      link.href = `http://localhost:3001${uploadedFile.url}`;
-      link.download = uploadedFile.url.split('/').pop();
+      link.href = uploadedFile.url;
+      link.download = uploadedFile.filename || 'uploaded-image';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -93,10 +97,10 @@ const ImageUploader = () => {
 ">{error}</p>}
       {uploadedFile && (
         <div className="previewContainer">
-          <img src={`http://localhost:3001${uploadedFile.url}`} alt="Uploaded preview" className="previewImage" />
+          <img src={uploadedFile.url} alt="Uploaded preview" className="previewImage" />
           <div className="buttonGroup">
             <button onClick={handleShare} >Share</button>
-            <button onClick={handleDownload} style={{background: green}}>Downloads</button>
+            <button onClick={handleDownload} style={{background: 'green'}}>Downloads</button>
           </div>
         </div>
       )}
