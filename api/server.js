@@ -27,9 +27,7 @@ app.use(limiter);
 
 // Configure CORS for production
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production'
-    ? [process.env.FRONTEND_URL || 'https://imageuploader-pied.vercel.app']
-    : ['http://localhost:5173', 'http://localhost:3000'],
+  origin: true, // Allow all origins temporarily
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
@@ -68,7 +66,6 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
     
     // Set appropriate headers
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Access-Control-Allow-Origin', '*');
     
     return res.status(200).json({
       message: 'File uploaded successfully',
