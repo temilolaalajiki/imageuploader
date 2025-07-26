@@ -12,7 +12,8 @@ const ImageUploader = () => {
   const navigate = useNavigate();
 
   // Get API URL from environment variable or use localhost for development
-  const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+  const API_BASE_URL = 'https://imageuploader-pied.vercel.app';
+  console.log('API URL:', API_BASE_URL); // Debug log
 
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
     setError(null);
@@ -30,7 +31,11 @@ const ImageUploader = () => {
       const formData = new FormData();
       formData.append('image', file);
 
-      axios.post(`${API_BASE_URL}/upload`, formData)
+      axios.post(`${API_BASE_URL}/api/upload`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
         .then(response => {
           setUploadedFile(response.data);
           setLoading(false);
@@ -38,7 +43,8 @@ const ImageUploader = () => {
         })
         .catch(err => {
           console.error('Upload error:', err);
-          setError('An error occurred during the upload.');
+          const errorMessage = err.response?.data?.error || err.response?.data?.details || err.message || 'An error occurred during the upload.';
+          setError(`Error: ${errorMessage}`);
           setLoading(false);
         });
     }

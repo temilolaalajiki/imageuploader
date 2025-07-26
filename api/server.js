@@ -10,7 +10,17 @@ const rateLimit = require('express-rate-limit');
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true
+});
+
+// Verify Cloudinary configuration on startup
+const cloudinaryConfig = cloudinary.config();
+console.log('Cloudinary Configuration:', {
+  isConfigured: !!(cloudinaryConfig.cloud_name && cloudinaryConfig.api_key && cloudinaryConfig.api_secret),
+  cloud_name: cloudinaryConfig.cloud_name ? 'Set' : 'Not set',
+  api_key: cloudinaryConfig.api_key ? 'Set' : 'Not set',
+  api_secret: cloudinaryConfig.api_secret ? 'Set' : 'Not set'
 });
 
 const app = express();
@@ -55,13 +65,17 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
     const b64 = Buffer.from(req.file.buffer).toString('base64');
     const dataURI = `data:${req.file.mimetype};base64,${b64}`;
     
+    // Log configuration before upload
+    console.log('Attempting upload with config:', {
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+      api_key_length: process.env.CLOUDINARY_API_KEY ? process.env.CLOUDINARY_API_KEY.length : 0,
+      api_secret_set: !!process.env.CLOUDINARY_API_SECRET
+    });
+
+    // Try a simpler upload first
     const result = await cloudinary.uploader.upload(dataURI, {
       resource_type: 'auto',
-      folder: 'imageuploader',
-      transformation: {
-        quality: 'auto',
-        fetch_format: 'auto'
-      }
+      folder: 'imageuploader'
     });
     
     // Set appropriate headers
@@ -130,28 +144,53 @@ app.get('/api/health', (req, res) => {
 });
 
 // Test endpoint
-app.get('/api/test', (req, res) => {
-  const config = cloudinary.config();
-  const cloudinaryConfigured = !!(process.env.CLOUDINARY_CLOUD_NAME && 
-                                process.env.CLOUDINARY_API_KEY && 
-                                process.env.CLOUDINARY_API_SECRET);
-  res.json({ 
-    message: 'API is working!',
-    environment: process.env.NODE_ENV || 'development',
-    cloudinaryConfigured,
-    cloudinaryDetails: {
-      cloud_name: !!config.cloud_name,
-      api_key: !!config.api_key,
-      api_secret: !!config.api_secret
-    },
-    envVars: {
-      cloud_name: !!process.env.CLOUDINARY_CLOUD_NAME,
-      api_key: !!process.env.CLOUDINARY_API_KEY,
-      api_secret: !!process.env.CLOUDINARY_API_SECRET
-    },
-    corsOrigin: process.env.FRONTEND_URL || 'Not configured',
-    timestamp: new Date().toISOString()
-  });
+app.get('/api/test', async (req, res) => {
+  try {
+    const config = cloudinary.config();
+    const cloudinaryConfigured = !!(process.env.CLOUDINARY_CLOUD_NAME && 
+                                  process.env.CLOUDINARY_API_KEY && 
+                                  process.env.CLOUDINARY_API_SECRET);
+    
+    // Try a test upload with a tiny base64 image
+    const testImage = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+    let uploadTest = null;
+    
+    try {
+      uploadTest = await cloudinary.uploader.upload(testImage, {
+        folder: 'imageuploader/test'
+      });
+    } catch (uploadError) {
+      uploadTest = {
+        error: uploadError.message,
+        http_code: uploadError.http_code
+      };
+    }
+
+    res.json({ 
+      message: 'API is working!',
+      environment: process.env.NODE_ENV || 'development',
+      cloudinaryConfigured,
+      cloudinaryDetails: {
+        cloud_name: !!config.cloud_name,
+        api_key: !!config.api_key,
+        api_secret: !!config.api_secret
+      },
+      envVars: {
+        cloud_name: !!process.env.CLOUDINARY_CLOUD_NAME,
+        api_key: !!process.env.CLOUDINARY_API_KEY,
+        api_secret: !!process.env.CLOUDINARY_API_SECRET
+      },
+      uploadTest: uploadTest ? 'Success' : 'Failed',
+      uploadError: uploadTest.error,
+      corsOrigin: process.env.FRONTEND_URL || 'Not configured',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Test endpoint error',
+      details: error.message
+    });
+  }
 });
 
 // Handle serverless environment
