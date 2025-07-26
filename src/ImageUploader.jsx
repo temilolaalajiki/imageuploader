@@ -7,12 +7,8 @@ import uploadIcon from './assets/images/upload.png';
 import checkIcon from './assets/images/check.png';
 import Toast from './components/Toast';
 import Footer from './components/Footer';
-import LoadingIndicator from './LoadingIndicator';
-import './components/UploadSuccess.css';
-import Toast from './components/Toast';
-import Footer from './components/Footer';
 import LoadingIndicator from './components/LoadingIndicator';
-import LoadingIndicator from './LoadingIndicator';
+import './components/UploadSuccess.css';
 
 const ImageUploader = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
@@ -97,14 +93,12 @@ const ImageUploader = () => {
           <input {...getInputProps()} />
           {!loading && (
           <div className="dropFileAreaContent">
-            <img src={uploadIcon} alt="Upload" className=" uploadIcon
-" />
+            <img src={uploadIcon} alt="Upload" className="uploadIcon" />
             <p><span style={{fontWeight: 500}} >Drag & drop a file or </span> <span className="browseLink">browse files</span> JPG, PNG or GIF - Max file size 2MB.</p>
           </div>
         )}
       </div>
-      {error && <p className="errorMessage 
-">{error}</p>}
+      {error && <p className="errorMessage">{error}</p>}
       {uploadedFile && (
         <div className="previewContainer">
           <img src={uploadedFile.url} alt="Uploaded preview" className="previewImage" />
