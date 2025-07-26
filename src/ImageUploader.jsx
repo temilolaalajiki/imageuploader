@@ -4,16 +4,27 @@ import { useDropzone } from 'react-dropzone';
 import axios from 'axios';
 import './ImageUploader.css';
 import uploadIcon from './assets/images/upload.png';
+import checkIcon from './assets/images/check.png';
+import Toast from './components/Toast';
+import Footer from './components/Footer';
+import LoadingIndicator from './LoadingIndicator';
+import './components/UploadSuccess.css';
+import Toast from './components/Toast';
+import Footer from './components/Footer';
+import LoadingIndicator from './components/LoadingIndicator';
+import LoadingIndicator from './LoadingIndicator';
 
 const ImageUploader = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [uploadSuccess, setUploadSuccess] = useState(false);
   const navigate = useNavigate();
 
-  // Get API URL from environment variable or use localhost for development
   const API_BASE_URL = 'https://imageuploader-pied.vercel.app';
-  console.log('API URL:', API_BASE_URL); // Debug log
+  console.log('API URL:', API_BASE_URL);
 
   const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
     setError(null);
@@ -62,7 +73,6 @@ const ImageUploader = () => {
 
   const handleShare = () => {
     if (uploadedFile) {
-      // For data URLs, we can't share a direct link, so we'll copy the data URL
       navigator.clipboard.writeText(uploadedFile.url)
         .then(() => alert('Image data URL copied to clipboard!'))
         .catch(err => console.error('Failed to copy URL: ', err));
@@ -81,17 +91,11 @@ const ImageUploader = () => {
   };
 
   return (
-    <div className="uploaderContainer">
-      <div {...getRootProps({ className: `dropFileArea ${isDragActive ? 'active' : ''}` })}>
-        <input {...getInputProps()} />
-        {loading ? (
-          <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', width: '100%'}}>
-            <span style={{fontWeight: 500, fontSize: '1.1em'}}>Uploading</span><span>, please wait</span>
-            <div className="loadingBarContainer">
-              <div className="loading-bar"></div>
-            </div>
-          </div>
-        ) : (
+      <div className="uploaderContainer">
+        {loading && <LoadingIndicator />}
+        <div {...getRootProps({ className: `dropFileArea ${isDragActive ? 'active' : ''}` })}>
+          <input {...getInputProps()} />
+          {!loading && (
           <div className="dropFileAreaContent">
             <img src={uploadIcon} alt="Upload" className=" uploadIcon
 " />

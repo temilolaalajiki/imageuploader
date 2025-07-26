@@ -1,0 +1,56 @@
+.upload-success {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.upload-success img {
+  width: 24px;
+  height: 24px;
+}
+
+.upload-success span {
+  color: #28a745;
+  font-weight: 500;
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .uploaderContainer {
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .buttonGroup button {
+    width: 100%;
+  }
+
+  .previewImage {
+    max-height: 50vh;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .uploaderContainer {
+    background: #2d2d2d;
+  }
+
+  .upload-success {
+    background: #2d2d2d;
+  }
+
+  .upload-success span {
+    color: #40c057;
+  }
+}
