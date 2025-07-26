@@ -87,11 +87,24 @@ app.get('/api/download/:public_id', async (req, res) => {
       return res.status(404).json({ error: 'File not found' });
     }
 
+    // Determine filename with extension
+    let downloadFilename = filename || public_id;
+    if (downloadFilename && !downloadFilename.includes('.')) {
+      // Append extension from resource format if missing
+      if (resource.format) {
+        downloadFilename += '.' + resource.format;
+      } else if (resource.secure_url) {
+        const urlParts = resource.secure_url.split('.');
+        if (urlParts.length > 1) {
+          downloadFilename += '.' + urlParts[urlParts.length - 1].split('?')[0];
+        }
+      }
+    }
+
     // Fetch the file from Cloudinary and pipe it to the response
     const https = require('https');
     https.get(resource.secure_url, (cloudinaryRes) => {
       res.setHeader('Content-Type', cloudinaryRes.headers['content-type'] || 'application/octet-stream');
-      const downloadFilename = filename || public_id;
       res.setHeader('Content-Disposition', `attachment; filename="${downloadFilename}"`);
       cloudinaryRes.pipe(res);
     }).on('error', (err) => {
