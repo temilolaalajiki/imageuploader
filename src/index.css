@@ -28,12 +28,11 @@ body[data-theme="dark"] {
   --header-text-color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
   color: rgba(255, 255, 255, 0.87);
-
 }
 
-[data-theme="dark"]  .browse-link { 
+/* [data-theme="dark"]  .browse-link { 
   color: #007bff !important;
-}
+} */
 
 button {
   border-radius: 8px;
@@ -64,10 +63,9 @@ button {
     margin: 0;
   }
 
-
   [data-theme="light"] .uploaderContainer {
-  background-color: #f8f9fa !important;
-}
+    background-color: #f8f9fa !important;
+  }
 
   h1,
   .title {
@@ -77,7 +75,6 @@ button {
     margin-bottom: 1em;
     word-break: break-word;
   }
-
 
   .uploadSection {
     width: 100%;
@@ -90,7 +87,7 @@ button {
 
   img,
   .imagePreview {
-    max-width: 100%;
+    /* max-width: 100%; */
     height: auto;
     display: block;
     margin: 0 auto;

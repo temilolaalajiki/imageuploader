@@ -290,7 +290,12 @@ main {
   margin-bottom: 0.1rem !important;
 }
 .preview-actions .browse-link:hover {
+text-decoration: none;
+}
+
+.preview-actions .browse-link {
 text-decoration: underline;
+ text-underline-offset: 4px;
 }
 
 
@@ -392,8 +397,18 @@ text-decoration: underline;
   text-align: center;
 }
 
-body[data-theme='dark'] .dropFileAreaContent p,
+
 body[data-theme='dark'] .dropFileAreaContent .browseLink {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+body[data-theme='light'] .dropFileAreaContent .browseLink {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+body[data-theme='dark'] .dropFileAreaContent p{
   color: #fff;
 }
 
@@ -423,14 +438,26 @@ body[data-theme='dark'] .successMessage {
 .previewContainer .browse-link:hover,
 .previewContainer .browse-link:focus {
   color: #0056b3;
-  text-decoration: underline;
+  text-decoration: none;
 }
+
+.previewContainer .browse-link {
+  color: #0056b3;
+  text-decoration: underline;
+  text-underline-offset: 4px; 
+}
+
+/* text-decoration: underline;
+ text-underline-offset: 4px; */
 
 body[data-theme='dark'] .previewContainer .browse-link,
 body[data-theme='dark'] .responsive-preview-layout .browse-link {
-  color: #fff !important;
+    color: #0056b3;
+  text-decoration: underline;
+  text-underline-offset: 4px; 
 }
 
 .browse-link {
   color: #007bff !important;
 }
+
