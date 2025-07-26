@@ -6,7 +6,6 @@ import './ImageUploader.css';
 import uploadIcon from './assets/images/upload.png';
 import checkIcon from './assets/images/check.png';
 import Toast from './components/Toast';
-import Footer from './components/Footer';
 import LoadingIndicator from './LoadingIndicator';
 import './components/UploadSuccess.css';
 
@@ -17,6 +16,7 @@ const ImageUploader = () => {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const navigate = useNavigate();
 
   const API_BASE_URL = 'https://imageuploader-pied.vercel.app';
@@ -26,8 +26,12 @@ const ImageUploader = () => {
     setError(null);
 
     if (rejectedFiles && rejectedFiles.length > 0) {
-      const message = rejectedFiles[0].errors[0].message;
-      setError(`Error: ${message}`);
+      const error = rejectedFiles[0].errors[0];
+      if (error.code === 'file-too-large') {
+        setError('The selected file is larger than 2MB!');
+      } else {
+        setError(`Error: ${error.message}`);
+      }
       return;
     }
 
@@ -42,17 +46,28 @@ const ImageUploader = () => {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
+          onUploadProgress: (progressEvent) => {
+            setLoading(true);
+          }
         })
         .then(response => {
-          setUploadedFile(response.data);
-          setLoading(false);
-          navigate('/preview', { state: { uploadedFile: response.data } });
+          return new Promise(resolve => {
+            setTimeout(() => {
+              setUploadedFile(response.data);
+              setLoading(false);
+              navigate('/preview', { state: { uploadedFile: response.data } });
+              resolve();
+            }, 2000); 
+          });
         })
         .catch(err => {
           console.error('Upload error:', err);
           const errorMessage = err.response?.data?.error || err.response?.data?.details || err.message || 'An error occurred during the upload.';
           setError(`Error: ${errorMessage}`);
-          setLoading(false);
+
+          setTimeout(() => {
+            setLoading(false);
+          }, 300);
         });
     }
   }, [navigate, API_BASE_URL]);
@@ -64,31 +79,63 @@ const ImageUploader = () => {
       'image/png': ['.png'],
       'image/gif': ['.gif'],
     },
-    maxSize: 2 * 1024 * 1024, // 2MB
+    maxSize: 2 * 1024 * 1024, 
   });
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (uploadedFile) {
-      navigator.clipboard.writeText(uploadedFile.url)
-        .then(() => alert('Image data URL copied to clipboard!'))
-        .catch(err => console.error('Failed to copy URL: ', err));
+      try {
+        await navigator.clipboard.writeText(uploadedFile.url);
+        setShowToast(true);
+      } catch (err) {
+        console.error('Failed to copy URL: ', err);
+      }
     }
   };
 
-  const handleDownload = () => {
-    if (uploadedFile) {
+  const handleDownload = async () => {
+    if (!uploadedFile || !uploadedFile.url) {
+      console.error('No file URL available');
+      return;
+    }
+
+    setIsDownloading(true);
+    try {
+      // Fetch the image first
+      const response = await fetch(uploadedFile.url);
+      if (!response.ok) throw new Error('Failed to fetch image');
+      
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      
+      // Get file extension from URL or fallback
+      const extension = uploadedFile.url.split('.').pop() || 'png';
+      const filename = `image-${Date.now()}.${extension}`;
+      
+      // Create download link
       const link = document.createElement('a');
-      link.href = uploadedFile.url;
-      link.download = uploadedFile.filename || 'uploaded-image';
+      link.href = blobUrl;
+      link.download = filename;
       document.body.appendChild(link);
+      
+      // Trigger download
       link.click();
+      
+      // Cleanup
       document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download the image. Please try again.');
+    } finally {
+      setIsDownloading(false);
     }
   };
 
   return (
       <div className="uploaderContainer">
         {loading && <LoadingIndicator />}
+        {showToast && <Toast onClose={() => setShowToast(false)} />}
         <div {...getRootProps({ className: `dropFileArea ${isDragActive ? 'active' : ''}` })}>
           <input {...getInputProps()} />
           {!loading && (
@@ -101,10 +148,20 @@ const ImageUploader = () => {
       {error && <p className="errorMessage">{error}</p>}
       {uploadedFile && (
         <div className="previewContainer">
+          <div className="successMessage">
+            <img src={checkIcon} alt="Success" className="successIcon" />
+            <span>Upload Successful</span>
+          </div>
           <img src={uploadedFile.url} alt="Uploaded preview" className="previewImage" />
           <div className="buttonGroup">
-            <button onClick={handleShare} >Share</button>
-            <button onClick={handleDownload} style={{background: 'green'}}>Downloads</button>
+            <button onClick={handleShare} disabled={isDownloading}>Share</button>
+            <button 
+              onClick={handleDownload} 
+              style={{background: 'green'}}
+              disabled={isDownloading}
+            >
+              {isDownloading ? 'Downloading...' : 'Download'}
+            </button>
           </div>
         </div>
       )}

@@ -12,7 +12,7 @@ function Header({ theme, toggleTheme }) {
     <header className="header">
       <div className="title">
         <img src={logo} alt="logo" className="logo" />
-        <h1>Simple Image Uploader</h1>
+        <h1>ImageUploader</h1>
       </div>
       <button onClick={toggleTheme} className="themeToggle">
         <div className="themeToggleIconBox">

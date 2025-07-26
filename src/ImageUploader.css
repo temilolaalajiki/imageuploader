@@ -51,6 +51,37 @@ main {
   z-index: 1;
 }
 
+.successMessage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: #e8f5e9;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  color: #2e7d32;
+  font-weight: 500;
+  font-size: 14px;
+  animation: slideDown 0.3s ease-out;
+}
+
+.successIcon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .previewImage {
   max-width: 100%;
   height: auto;
@@ -279,7 +310,7 @@ text-decoration: underline;
 
   main {
     justify-content: flex-start !important;
-    margin: 20px;
+    /* margin: 20px; */
   }
 
   .uploaderContainer {
@@ -374,6 +405,11 @@ body[data-theme='dark'] .dropFileAreaContent .browseLink {
 
 body[data-theme='dark'] .uploaderContainer {
   background: #242424;
+}
+
+body[data-theme='dark'] .successMessage {
+  background: #1b3620;
+  color: #4ade80;
 }
 
 .previewContainer .browse-link {
