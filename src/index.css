@@ -28,9 +28,12 @@ body[data-theme="dark"] {
   --header-text-color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
   color: rgba(255, 255, 255, 0.87);
+
 }
 
-
+[data-theme="dark"]  .browse-link { 
+  color: #007bff !important;
+}
 
 button {
   border-radius: 8px;
