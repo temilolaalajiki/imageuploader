@@ -7,12 +7,15 @@ const cloudinary = require('cloudinary').v2;
 const rateLimit = require('express-rate-limit');
 
 // Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
+// Clean up potential whitespace in credentials
+const cleanCredentials = {
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME?.trim(),
+  api_key: process.env.CLOUDINARY_API_KEY?.trim(),
+  api_secret: process.env.CLOUDINARY_API_SECRET?.trim(),
   secure: true
-});
+};
+
+cloudinary.config(cleanCredentials);
 
 // Verify Cloudinary configuration on startup
 const cloudinaryConfig = cloudinary.config();
@@ -72,10 +75,12 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
       api_secret_set: !!process.env.CLOUDINARY_API_SECRET
     });
 
-    // Try a simpler upload first
+    // Try a simpler upload first with explicit timestamp
+    const timestamp = Math.round(new Date().getTime() / 1000);
     const result = await cloudinary.uploader.upload(dataURI, {
       resource_type: 'auto',
-      folder: 'imageuploader'
+      folder: 'imageuploader',
+      timestamp: timestamp
     });
     
     // Set appropriate headers
@@ -156,8 +161,10 @@ app.get('/api/test', async (req, res) => {
     let uploadTest = null;
     
     try {
+      const timestamp = Math.round(new Date().getTime() / 1000);
       uploadTest = await cloudinary.uploader.upload(testImage, {
-        folder: 'imageuploader/test'
+        folder: 'imageuploader/test',
+        timestamp: timestamp
       });
     } catch (uploadError) {
       uploadTest = {
