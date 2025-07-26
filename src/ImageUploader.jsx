@@ -7,7 +7,7 @@ import uploadIcon from './assets/images/upload.png';
 import checkIcon from './assets/images/check.png';
 import Toast from './components/Toast';
 import Footer from './components/Footer';
-import LoadingIndicator from './components/LoadingIndicator';
+import LoadingIndicator from './LoadingIndicator';
 import './components/UploadSuccess.css';
 
 const ImageUploader = () => {
