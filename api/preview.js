@@ -1,17 +1,19 @@
-// api/preview.js
-
-import fs from 'fs';
-import path from 'path';
-
 export default async function handler(req, res) {
-  const { name } = req.query;
-  const filePath = path.join('/tmp', name);
-
-  if (!fs.existsSync(filePath)) {
-    return res.status(404).json({ error: 'File not found' });
+  const { url } = req.query;
+  
+  if (!url) {
+    return res.status(400).json({ error: 'URL parameter is required' });
   }
 
-  const fileStream = fs.createReadStream(filePath);
-  res.setHeader('Content-Type', 'image/jpeg');
-  fileStream.pipe(res);
+  try {
+    return res.status(200).json({ 
+      url: url,
+      status: 'success' 
+    });
+  } catch (error) {
+    return res.status(500).json({ 
+      error: 'Preview failed',
+      message: error.message 
+    });
+  }
 }
