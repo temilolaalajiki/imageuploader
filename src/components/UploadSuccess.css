@@ -19,7 +19,6 @@
   font-weight: 500;
 }
 
-/* Mobile Responsive Adjustments */
 @media (max-width: 768px) {
   .uploaderContainer {
     margin: 1rem;

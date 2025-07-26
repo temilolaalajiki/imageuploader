@@ -30,7 +30,7 @@
 
 .loading-text {
   font-size: 16px;
-  color: #4F4F4F;
+  color: #4f4f4f;
   margin-bottom: 16px;
   font-weight: 500;
 }
@@ -39,7 +39,7 @@
   width: 90%;
   max-width: 700px;
   height: 4px;
-  background-color: #F2F2F2;
+  background-color: #f2f2f2;
   border-radius: 8px;
   overflow: hidden;
   position: relative;
@@ -48,7 +48,7 @@
 .progress-bar {
   height: 100%;
   width: 100px;
-  background-color: #2F80ED;
+  background-color: #2f80ed;
   position: absolute;
   border-radius: 8px;
   animation: progress-animation 1.5s infinite ease-in-out;

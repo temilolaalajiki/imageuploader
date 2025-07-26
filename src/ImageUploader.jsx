@@ -1,85 +1,95 @@
-import React, { useState, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDropzone } from 'react-dropzone';
-import axios from 'axios';
-import './ImageUploader.css';
-import uploadIcon from './assets/images/upload.png';
-import checkIcon from './assets/images/check.png';
-import Toast from './components/Toast';
-import LoadingIndicator from './LoadingIndicator';
-import './components/UploadSuccess.css';
+import React, { useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDropzone } from "react-dropzone";
+import axios from "axios";
+import "./ImageUploader.css";
+import uploadIcon from "./assets/images/upload.png";
+import checkIcon from "./assets/images/check.png";
+import Toast from "./components/Toast";
+import LoadingIndicator from "./LoadingIndicator";
+import "./components/UploadSuccess.css";
 
 const ImageUploader = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showToast, setShowToast] = useState(false);
-  const [toastMessage, setToastMessage] = useState('');
+  const [toastMessage, setToastMessage] = useState("");
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const navigate = useNavigate();
 
-  const API_BASE_URL = 'https://imageuploader-pied.vercel.app';
-  console.log('API URL:', API_BASE_URL);
+  const API_BASE_URL = "https://imageuploader-pied.vercel.app";
+  console.log("API URL:", API_BASE_URL);
 
-  const onDrop = useCallback((acceptedFiles, rejectedFiles) => {
-    setError(null);
+  const onDrop = useCallback(
+    (acceptedFiles, rejectedFiles) => {
+      setError(null);
 
-    if (rejectedFiles && rejectedFiles.length > 0) {
-      const error = rejectedFiles[0].errors[0];
-      if (error.code === 'file-too-large') {
-        setError('The selected file is larger than 2MB!');
-      } else {
-        setError(`Error: ${error.message}`);
+      if (rejectedFiles && rejectedFiles.length > 0) {
+        const error = rejectedFiles[0].errors[0];
+        if (error.code === "file-too-large") {
+          setError("The selected file is larger than 2MB!");
+        } else {
+          setError(`Error: ${error.message}`);
+        }
+        return;
       }
-      return;
-    }
 
-    if (acceptedFiles && acceptedFiles.length > 0) {
-      const file = acceptedFiles[0];
-      setLoading(true);
+      if (acceptedFiles && acceptedFiles.length > 0) {
+        const file = acceptedFiles[0];
+        setLoading(true);
 
-      const formData = new FormData();
-      formData.append('image', file);
+        const formData = new FormData();
+        formData.append("image", file);
 
-      axios.post(`${API_BASE_URL}/api/upload`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          onUploadProgress: (progressEvent) => {
-            setLoading(true);
-          }
-        })
-        .then(response => {
-          return new Promise(resolve => {
+        axios
+          .post(`${API_BASE_URL}/api/upload`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            onUploadProgress: (progressEvent) => {
+              setLoading(true);
+            },
+          })
+          .then((response) => {
+            return new Promise((resolve) => {
+              setTimeout(() => {
+                setUploadedFile(response.data);
+                setLoading(false);
+                navigate("/preview", {
+                  state: { uploadedFile: response.data },
+                });
+                resolve();
+              }, 2000);
+            });
+          })
+          .catch((err) => {
+            console.error("Upload error:", err);
+            const errorMessage =
+              err.response?.data?.error ||
+              err.response?.data?.details ||
+              err.message ||
+              "An error occurred during the upload.";
+            setError(`Error: ${errorMessage}`);
+
             setTimeout(() => {
-              setUploadedFile(response.data);
               setLoading(false);
-              navigate('/preview', { state: { uploadedFile: response.data } });
-              resolve();
-            }, 2000); 
+            }, 300);
           });
-        })
-        .catch(err => {
-          console.error('Upload error:', err);
-          const errorMessage = err.response?.data?.error || err.response?.data?.details || err.message || 'An error occurred during the upload.';
-          setError(`Error: ${errorMessage}`);
-
-          setTimeout(() => {
-            setLoading(false);
-          }, 300);
-        });
-    }
-  }, [navigate, API_BASE_URL]);
+      }
+    },
+    [navigate, API_BASE_URL]
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      'image/jpeg': ['.jpg', '.jpeg'],
-      'image/png': ['.png'],
-      'image/gif': ['.gif'],
+      "image/jpeg": [".jpg", ".jpeg"],
+      "image/png": [".png"],
+      "image/gif": [".gif"],
     },
-    maxSize: 2 * 1024 * 1024, 
+    maxSize: 2 * 1024 * 1024,
   });
 
   const handleShare = async () => {
@@ -88,14 +98,14 @@ const ImageUploader = () => {
         await navigator.clipboard.writeText(uploadedFile.url);
         setShowToast(true);
       } catch (err) {
-        console.error('Failed to copy URL: ', err);
+        console.error("Failed to copy URL: ", err);
       }
     }
   };
 
   const handleDownload = async () => {
     if (!uploadedFile || !uploadedFile.url) {
-      console.error('No file URL available');
+      console.error("No file URL available");
       return;
     }
 
@@ -103,45 +113,53 @@ const ImageUploader = () => {
     try {
       // Fetch the image first
       const response = await fetch(uploadedFile.url);
-      if (!response.ok) throw new Error('Failed to fetch image');
-      
+      if (!response.ok) throw new Error("Failed to fetch image");
+
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
-      
+
       // Get file extension from URL or fallback
-      const extension = uploadedFile.url.split('.').pop() || 'png';
+      const extension = uploadedFile.url.split(".").pop() || "png";
       const filename = `image-${Date.now()}.${extension}`;
-      
+
       // Create download link
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = blobUrl;
       link.download = filename;
       document.body.appendChild(link);
-      
+
       // Trigger download
       link.click();
-      
+
       // Cleanup
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {
-      console.error('Download failed:', error);
-      alert('Failed to download the image. Please try again.');
+      console.error("Download failed:", error);
+      alert("Failed to download the image. Please try again.");
     } finally {
       setIsDownloading(false);
     }
   };
 
   return (
-      <div className="uploaderContainer">
-        {loading && <LoadingIndicator />}
-        {showToast && <Toast onClose={() => setShowToast(false)} />}
-        <div {...getRootProps({ className: `dropFileArea ${isDragActive ? 'active' : ''}` })}>
-          <input {...getInputProps()} />
-          {!loading && (
+    <div className="uploaderContainer">
+      {loading && <LoadingIndicator />}
+      {showToast && <Toast onClose={() => setShowToast(false)} />}
+      <div
+        {...getRootProps({
+          className: `dropFileArea ${isDragActive ? "active" : ""}`,
+        })}
+      >
+        <input {...getInputProps()} />
+        {!loading && (
           <div className="dropFileAreaContent">
             <img src={uploadIcon} alt="Upload" className="uploadIcon" />
-            <p><span style={{fontWeight: 500}} >Drag & drop a file or </span> <span className="browseLink">browse files</span> JPG, PNG or GIF - Max file size 2MB.</p>
+            <p>
+              <span style={{ fontWeight: 500 }}>Drag & drop a file or </span>{" "}
+              <span className="browseLink">browse files</span> JPG, PNG or GIF -
+              Max file size 2MB.
+            </p>
           </div>
         )}
       </div>
@@ -152,15 +170,21 @@ const ImageUploader = () => {
             <img src={checkIcon} alt="Success" className="successIcon" />
             <span>Upload Successful</span>
           </div>
-          <img src={uploadedFile.url} alt="Uploaded preview" className="previewImage" />
+          <img
+            src={uploadedFile.url}
+            alt="Uploaded preview"
+            className="previewImage"
+          />
           <div className="buttonGroup">
-            <button onClick={handleShare} disabled={isDownloading}>Share</button>
-            <button 
-              onClick={handleDownload} 
-              style={{background: 'green'}}
+            <button onClick={handleShare} disabled={isDownloading}>
+              Share
+            </button>
+            <button
+              onClick={handleDownload}
+              style={{ background: "green" }}
               disabled={isDownloading}
             >
-              {isDownloading ? 'Downloading...' : 'Download'}
+              {isDownloading ? "Downloading..." : "Download"}
             </button>
           </div>
         </div>

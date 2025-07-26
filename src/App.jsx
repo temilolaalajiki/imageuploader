@@ -1,11 +1,17 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
-import ImageUploader from './ImageUploader';
-import './App.css';
-import logo from './assets/images/logo.png';
-import lightMode from './assets/images/light-mode.png';
-import darkMode from './assets/images/night-mode.png';
-import ImagePreview from './ImagePreview';
+import { useState, useEffect } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
+import ImageUploader from "./ImageUploader";
+import "./App.css";
+import logo from "./assets/images/logo.png";
+import lightMode from "./assets/images/light-mode.png";
+import darkMode from "./assets/images/night-mode.png";
+import ImagePreview from "./ImagePreview";
 
 function Header({ theme, toggleTheme }) {
   return (
@@ -16,9 +22,9 @@ function Header({ theme, toggleTheme }) {
       </div>
       <button onClick={toggleTheme} className="themeToggle">
         <div className="themeToggleIconBox">
-          <img 
-            src={theme === 'light' ? darkMode : lightMode} 
-            alt={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+          <img
+            src={theme === "light" ? darkMode : lightMode}
+            alt={`Switch to ${theme === "light" ? "Dark" : "Light"} Mode`}
             className="themeToggleIcon"
           />
         </div>
@@ -42,14 +48,14 @@ function AppRoutes({ theme, toggleTheme }) {
 }
 
 function App() {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState("light");
 
   useEffect(() => {
-    document.body.setAttribute('data-theme', theme);
+    document.body.setAttribute("data-theme", theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(prevTheme => (prevTheme === 'light' ? 'dark' : 'light'));
+    setTheme((prevTheme) => (prevTheme === "light" ? "dark" : "light"));
   };
 
   return (
