@@ -34,10 +34,10 @@ const ImagePreview = () => {
           </button>
           <button
             onClick={() => {
-              const filename = uploadedFile.filename || 'uploaded-image';
+              const publicId = uploadedFile.public_id || 'uploaded-image';
               const link = document.createElement('a');
-              link.href = `/api/download/${encodeURIComponent(filename)}`;
-              link.download = filename;
+              link.href = `/api/download/${encodeURIComponent(publicId)}`;
+              link.download = uploadedFile.filename || 'downloaded-image';
               document.body.appendChild(link);
               link.click();
               document.body.removeChild(link);

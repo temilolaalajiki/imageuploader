@@ -51,7 +51,8 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
       message: 'File uploaded successfully',
       url: result.secure_url,
       filename: req.file.originalname,
-      size: req.file.size
+      size: req.file.size,
+      public_id: result.public_id
     });
   } catch (error) {
     if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
@@ -72,15 +73,16 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'OK' });
 });
 
-app.get('/api/download/:filename', async (req, res) => {
-  const { filename } = req.params;
-  if (!filename) {
-    return res.status(400).json({ error: 'Filename parameter is required' });
+app.get('/api/download/:public_id', async (req, res) => {
+  const { public_id } = req.params;
+  const { filename } = req.query;
+  if (!public_id) {
+    return res.status(400).json({ error: 'Public ID parameter is required' });
   }
 
   try {
     // Get the resource details from Cloudinary to obtain the URL
-    const resource = await cloudinary.api.resource(filename, { resource_type: 'image' });
+    const resource = await cloudinary.api.resource(public_id, { resource_type: 'image' });
     if (!resource || !resource.secure_url) {
       return res.status(404).json({ error: 'File not found' });
     }
@@ -89,7 +91,8 @@ app.get('/api/download/:filename', async (req, res) => {
     const https = require('https');
     https.get(resource.secure_url, (cloudinaryRes) => {
       res.setHeader('Content-Type', cloudinaryRes.headers['content-type'] || 'application/octet-stream');
-      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      const downloadFilename = filename || public_id;
+      res.setHeader('Content-Disposition', `attachment; filename="${downloadFilename}"`);
       cloudinaryRes.pipe(res);
     }).on('error', (err) => {
       res.status(500).json({ error: 'Error downloading file' });
