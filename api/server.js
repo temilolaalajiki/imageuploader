@@ -27,7 +27,11 @@ app.use(limiter);
 
 // Configure CORS for production
 app.use(cors({
-  origin: '*', // Allow all origins for now
+  origin: process.env.NODE_ENV === 'production'
+    ? [process.env.FRONTEND_URL || 'https://imageuploader-pied.vercel.app']
+    : ['http://localhost:5173', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
 
@@ -43,7 +47,7 @@ const upload = multer({
 });
 
 // Route for file upload
-app.post('/upload', upload.single('image'), async (req, res) => {
+app.post('/api/upload', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'No file uploaded.' });
@@ -78,20 +82,38 @@ app.post('/upload', upload.single('image'), async (req, res) => {
     });
   } catch (error) {
     console.error('Upload error:', error);
-    res.status(500).json({ error: 'An error occurred during upload.' });
+    // More specific error messages
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      return res.status(500).json({ error: 'Cloudinary configuration is missing' });
+    }
+    if (error.http_code === 400) {
+      return res.status(400).json({ error: 'Invalid file format or corrupt image' });
+    }
+    if (error.http_code === 401) {
+      return res.status(401).json({ error: 'Invalid Cloudinary credentials' });
+    }
+    res.status(500).json({ 
+      error: 'An error occurred during upload.',
+      details: error.message 
+    });
   }
 });
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
 // Test endpoint
-app.get('/test', (req, res) => {
+app.get('/api/test', (req, res) => {
+  const cloudinaryConfigured = !!(process.env.CLOUDINARY_CLOUD_NAME && 
+                                process.env.CLOUDINARY_API_KEY && 
+                                process.env.CLOUDINARY_API_SECRET);
   res.json({ 
     message: 'API is working!',
     environment: process.env.NODE_ENV || 'development',
+    cloudinaryConfigured,
+    corsOrigin: process.env.FRONTEND_URL || 'Not configured',
     timestamp: new Date().toISOString()
   });
 });
