@@ -78,20 +78,48 @@ app.post('/api/upload', upload.single('image'), async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error('Upload error details:', {
+      message: error.message,
+      code: error.http_code,
+      stack: error.stack,
+      cloudinaryError: error.error || null
+    });
+
+    // Check Cloudinary configuration
+    const cloudinaryConfig = cloudinary.config();
+    console.log('Cloudinary Config:', {
+      cloud_name: cloudinaryConfig.cloud_name ? 'Set' : 'Not set',
+      api_key: cloudinaryConfig.api_key ? 'Set' : 'Not set',
+      api_secret: cloudinaryConfig.api_secret ? 'Set' : 'Not set'
+    });
+
     // More specific error messages
     if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-      return res.status(500).json({ error: 'Cloudinary configuration is missing' });
+      return res.status(500).json({ 
+        error: 'Cloudinary configuration is missing',
+        details: {
+          cloud_name: !!process.env.CLOUDINARY_CLOUD_NAME,
+          api_key: !!process.env.CLOUDINARY_API_KEY,
+          api_secret: !!process.env.CLOUDINARY_API_SECRET
+        }
+      });
     }
     if (error.http_code === 400) {
-      return res.status(400).json({ error: 'Invalid file format or corrupt image' });
+      return res.status(400).json({ 
+        error: 'Invalid file format or corrupt image',
+        details: error.message
+      });
     }
     if (error.http_code === 401) {
-      return res.status(401).json({ error: 'Invalid Cloudinary credentials' });
+      return res.status(401).json({ 
+        error: 'Invalid Cloudinary credentials',
+        details: 'Please check your Cloudinary credentials'
+      });
     }
     res.status(500).json({ 
       error: 'An error occurred during upload.',
-      details: error.message 
+      details: error.message,
+      errorCode: error.http_code || 'unknown'
     });
   }
 });
@@ -103,6 +131,7 @@ app.get('/api/health', (req, res) => {
 
 // Test endpoint
 app.get('/api/test', (req, res) => {
+  const config = cloudinary.config();
   const cloudinaryConfigured = !!(process.env.CLOUDINARY_CLOUD_NAME && 
                                 process.env.CLOUDINARY_API_KEY && 
                                 process.env.CLOUDINARY_API_SECRET);
@@ -110,6 +139,16 @@ app.get('/api/test', (req, res) => {
     message: 'API is working!',
     environment: process.env.NODE_ENV || 'development',
     cloudinaryConfigured,
+    cloudinaryDetails: {
+      cloud_name: !!config.cloud_name,
+      api_key: !!config.api_key,
+      api_secret: !!config.api_secret
+    },
+    envVars: {
+      cloud_name: !!process.env.CLOUDINARY_CLOUD_NAME,
+      api_key: !!process.env.CLOUDINARY_API_KEY,
+      api_secret: !!process.env.CLOUDINARY_API_SECRET
+    },
     corsOrigin: process.env.FRONTEND_URL || 'Not configured',
     timestamp: new Date().toISOString()
   });
