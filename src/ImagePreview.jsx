@@ -50,11 +50,13 @@ const ImagePreview = () => {
           style={{ marginTop: '0', fontSize: '1.08rem', border: 'none', background: 'none', cursor: 'pointer' }}
           onClick={() => navigate('/')}
         >
-          Upload new file
+          <span>
+            Upload new file
+          </span>
         </button>
       </div>
     </div>
-  );
+  ); 
 };
 
 export default ImagePreview;

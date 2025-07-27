@@ -1,4 +1,6 @@
-body, #root, .App {
+body,
+#root,
+.App {
   min-height: 100vh;
   height: 100vh;
   margin: 0;
@@ -11,6 +13,7 @@ body, #root, .App {
 
 main {
   /* flex: 1 1 auto; */
+  margin-top: 20px;
   flex: none;
   display: flex;
   flex-direction: column;
@@ -24,7 +27,7 @@ main {
 .uploaderContainer {
   background: #f8f9fa;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   padding: 1.5rem;
   max-width: min(420px, 92%);
   width: 100%;
@@ -130,7 +133,7 @@ main {
   color: #fff;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
   width: 140px;
   outline: none;
 }
@@ -192,8 +195,7 @@ main {
   gap: 1rem;
 }
 
-.uploadIcon
- {
+.uploadIcon {
   width: 64px;
   height: 64px;
   object-fit: contain;
@@ -201,8 +203,7 @@ main {
   transition: opacity 0.3s;
 }
 
-.dropFileArea:hover .uploadIcon
- {
+.dropFileArea:hover .uploadIcon {
   opacity: 1;
 }
 
@@ -229,8 +230,7 @@ main {
   }
 }
 
-.errorMessage 
- {
+.errorMessage {
   color: #e53e3e;
   margin-top: 1rem;
 }
@@ -240,6 +240,11 @@ main {
     max-width: 600px;
     padding: 2rem;
     margin: 2rem auto;
+  }
+
+  .browse-link {
+    text-decoration: underline !important;
+    text-underline-offset: 5px !important;
   }
 
   .previewContainer {
@@ -265,7 +270,6 @@ main {
   }
 }
 
-/* Styles for browse-link */
 .browse-link {
   display: block;
   width: 100%;
