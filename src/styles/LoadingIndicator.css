@@ -30,7 +30,7 @@
 
 .loadingText {
   font-size: 16px;
-  color: #000;
+  color: #000000 !important;
   margin-bottom: 16px;
   font-weight: 500;
 }
@@ -69,9 +69,9 @@
     box-shadow: 0 8px 16px rgba(248, 244, 244, 0.3) !important;
   }
 
-  /* .loadingText {
-    color: #000000;
-  } */
+  .loadingText {
+    color: #000000 !important;
+  }
 }
 
 /* Dark mode */
