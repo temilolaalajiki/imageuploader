@@ -254,13 +254,14 @@ main {
   }
 
   .buttonGroup {
-    max-width: 400px;
+    /* max-width: 400px; */
+    /* width: 100% !important; */
     gap: 1rem;
     padding: 0 1.5rem;
   }
 
   .buttonGroup button {
-    width: 140px !important;
+    width: 100% !important;
     font-size: 1rem;
     padding: 0.85em 0;
   }
@@ -282,7 +283,7 @@ main {
   border: none;
   background: none;
   cursor: pointer;
-  padding: 0;
+  /* padding: 0; */
 }
 
 .browse-link:hover {
