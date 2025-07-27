@@ -113,3 +113,35 @@
   }
 }
 
+/* iPad Responsive Styles */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .logo {
+    height: 32px;
+    padding-left: 20px;
+  }
+
+  .header {
+    padding: 1rem 1.5rem 1rem 2rem;
+    gap: 1rem;
+  }
+
+  .title {
+    font-size: 12px;
+    gap: 0.75rem;
+  }
+
+  h1 {
+    font-size: 1.2rem;
+  }
+
+  .themeToggle {
+    width: 30px;
+    height: 30px;
+    right: 30px;
+  }
+
+  .themeToggleIcon {
+    width: 22px;
+    height: 22px;
+  }
+}

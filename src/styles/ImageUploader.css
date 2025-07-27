@@ -50,6 +50,14 @@ main {
   z-index: 1;
 }
 
+.preview-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
 .successMessage {
   display: flex;
   align-items: center;
@@ -89,6 +97,15 @@ main {
   object-fit: contain;
   margin-bottom: 0.25rem;
   display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.responsive-preview-layout {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 .buttonGroup {
@@ -100,7 +117,7 @@ main {
   margin: 0 auto;
   width: 100%;
   max-width: 280px;
-  padding: 0 1rem;
+  padding: 0;
 }
 
 .buttonGroup button {
@@ -113,7 +130,7 @@ main {
   cursor: pointer;
   transition: all 0.2s;
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-  width: 120px;
+  width: 140px;
   outline: none;
 }
 .buttonGroup button:active,
@@ -217,246 +234,52 @@ main {
   margin-top: 1rem;
 }
 
-/* .previewContainer {
-  margin-top: 2rem;
-  text-align: center;
-} */
-
-/* .previewImage {
-  max-width: 100%;
-  max-height: 300px;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-} */
-
-/* .buttonGroup {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-} */
-
-/* .uploadInfo  {
-  font-size: 0.875rem;
-  color: #888;
-  margin-top: 1rem;
-} */
-
-.loadingBarContainer {
-  width: 100%;
-  height: 6px;
-  background: transparent;
-  overflow: hidden;
-  border-radius: 3px;
-  margin-top: 0.5rem;
-}
-
-.loadingBar{
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, #007bff 25%, #66b3ff 50%, #007bff 75%);
-  background-size: 200% 100%;
-  animation: loading-bar-move 1.5s linear infinite alternate;
-  border-radius: 3px;
-}
-
-@keyframes loading-bar-move {
-  0% {
-    background-position: 200% 0;
-  }
-  100% {
-    background-position: -200% 0;
-  }
-}
-
-.responsive-preview-layout {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: center;
-  margin-top: 3.5rem;
-  width: 100%;
-}
-
-.preview-actions {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-left: 2rem;
-  margin-bottom: 1rem;
-}
-
-.preview-actions .buttonGroup {
-  margin-bottom: 0.1rem !important;
-}
-.preview-actions .browse-link:hover {
-text-decoration: none;
-}
-
-.preview-actions .browse-link {
-text-decoration: underline;
- text-underline-offset: 4px;
-}
-
-
-@media (max-width: 600px) {
-  html, body, #root, .App {
-    overflow-x: hidden;
-    width: 100vw;
-  }
-  
-  /* main {
-    width: 100vw;
-    overflow-x: hidden;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  } */
-
-  main {
-    justify-content: flex-start !important;
-    /* margin: 20px; */
-  }
-
+@media (min-width: 768px) and (max-width: 1024px) {
   .uploaderContainer {
-    /* background-color: red; */
-    margin-right: 0px;
-    box-sizing: border-box;
-    /* width: 100vw; */
-    max-width: 320px;
-    margin: 0;
-    border-radius: 3px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    overflow-x: hidden;
-    margin-top: 20px;
+    max-width: 600px;
+    padding: 2rem;
+    margin: 2rem auto;
   }
+
   .previewContainer {
-    margin-top: 0.5rem;
-    max-width: 100vw;
-    width: 100vw;
-    padding: 0 0.5em;
-    gap: 0.7rem;
+    max-width: 500px;
+    gap: 1rem;
+    padding: 1rem;
   }
-  .previewImage {
-    max-width: 100%;
-    height: auto;
-    width: auto;
-    max-height: 50vh;
-    margin-bottom: 0.4rem;
-  }
+
   .buttonGroup {
-    width: 100%;
-    justify-content: center;
-    flex-direction: column;
-    gap: 0.7em;
-    align-items: stretch;
+    max-width: 400px;
+    gap: 1rem;
+    padding: 0 1.5rem;
   }
+
   .buttonGroup button {
-    margin-right: 2em;
-    margin-left: 2em;
-    width: 160px;
-    max-width: 90vw;
-    min-width: 100px;
-    align-self: center;
+    width: 140px !important;
+    font-size: 1rem;
+    padding: 0.85em 0;
   }
-  .responsive-preview-layout {
-    flex-direction: column;
-    align-items: center;
-    margin-top: 2.5rem;
-    width: 100vw;
-    max-width: 100vw;
-    margin-left: auto;
-    margin-right: auto;
-    overflow-x: hidden;
-  }
-  .preview-actions {
-    margin-left: 0;
-    margin-bottom: 0.5rem;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .buttonGroup {
-    width: 100%;
-    justify-content: center;
-    flex-direction: column;
-    gap: 0.7em;
-    align-items: stretch;
+
+  .previewImage {
+    max-height: 70vh;
   }
 }
 
-.dropFileAreaContent p {
-  color: #213547;
-  margin: 0.5em 0 0 0;
-  font-size: 1em;
+/* Styles for browse-link */
+.browse-link {
+  display: block;
+  width: 100%;
   text-align: center;
-}
-
-
-body[data-theme='dark'] .dropFileAreaContent .browseLink {
   color: #007bff;
   text-decoration: underline;
-}
-
-body[data-theme='light'] .dropFileAreaContent .browseLink {
-  color: #007bff;
-  text-decoration: underline;
-}
-
-body[data-theme='dark'] .dropFileAreaContent p{
-  color: #fff;
-}
-
-body[data-theme='dark'] .uploaderContainer {
-  background: #242424;
-}
-
-body[data-theme='dark'] .successMessage {
-  background: #1b3620;
-  color: #4ade80;
-}
-
-.previewContainer .browse-link {
-  display: inline-block;
-  margin-top: 1.2rem;
+  text-underline-offset: 5px;
   font-size: 1.08rem;
-  color: #007bff !important;
-  text-decoration: underline;
-  cursor: pointer;
-  background: none;
+  margin-top: 0;
   border: none;
+  background: none;
+  cursor: pointer;
   padding: 0;
-  font-weight: 500;
-  transition: color 0.2s;
 }
 
-.previewContainer .browse-link:hover,
-.previewContainer .browse-link:focus {
-  color: #0056b3;
+.browse-link:hover {
   text-decoration: none;
 }
-
-.previewContainer .browse-link {
-  color: #0056b3;
-  text-decoration: underline;
-  text-underline-offset: 4px; 
-}
-
-/* text-decoration: underline;
- text-underline-offset: 4px; */
-
-body[data-theme='dark'] .previewContainer .browse-link,
-body[data-theme='dark'] .responsive-preview-layout .browse-link {
-    color: #0056b3;
-  text-decoration: underline;
-  text-underline-offset: 4px; 
-}
-
-.browse-link {
-  color: #007bff !important;
-}
-
