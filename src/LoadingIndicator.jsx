@@ -5,7 +5,7 @@ const LoadingIndicator = () => {
   return (
     <>
       <div className="loadingOverlay"></div>
-      <div className="loadingContainer">
+      <div className="uploadingContainer">
         <p className="loadingText">
           <span style={{ fontWeight: 500}}>Uploading... </span>please wait
         </p>
