@@ -39,7 +39,6 @@
   }
 }
 
-/* Dark Mode Support */
 @media (prefers-color-scheme: dark) {
   .uploaderContainer {
     background: #2d2d2d;

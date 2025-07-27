@@ -9,7 +9,7 @@
   z-index: 999;
 }
 
-.loading-container {
+.loadingContainer {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -28,14 +28,14 @@
   padding: 1.5rem;
 }
 
-.loading-text {
+.loadingText {
   font-size: 16px;
   color: #4f4f4f;
   margin-bottom: 16px;
   font-weight: 500;
 }
 
-.progress-bar-container {
+.progressBarContainer {
   width: 90%;
   max-width: 700px;
   height: 4px;
@@ -45,7 +45,7 @@
   position: relative;
 }
 
-.progress-bar {
+.progressBar {
   height: 100%;
   width: 100px;
   background-color: #2f80ed;
@@ -64,7 +64,7 @@
 }
 
 @media (prefers-color-scheme: light) {
-  .loading-container {
+  .loadingContainer {
     background: #ffffff;
     box-shadow: 0 8px 16px rgba(248, 244, 244, 0.3) !important;
   }
@@ -73,37 +73,37 @@
 
 /* Dark mode */
 @media (prefers-color-scheme: dark) {
-  .loading-container {
+  .loadingContainer {
     background: #1a1a1a;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
   }
 
-  .loading-text {
+  .loadingText {
     color: #e1e1e1;
   }
 
-  .progress-bar-container {
+  .progressBarContainer {
     background-color: #333333;
   }
 
-  .progress-bar {
+  .progressBar {
     background-color: #3b82f6;
   }
 }
 
 @media (max-width: 480px) {
-  .loading-container {
+  .loadingContainer {
     width: 85%;
     height: 100px;
     padding: 1rem;
   }
 
 
-  .progress-bar-container {
+  .progressBarContainer {
     width: 90%;
   }
 
-  .loading-text {
+  .loadingText {
     font-size: 15px;
     margin-bottom: 14px;
   }

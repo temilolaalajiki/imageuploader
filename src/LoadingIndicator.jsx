@@ -4,13 +4,13 @@ import "./LoadingIndicator.css";
 const LoadingIndicator = () => {
   return (
     <>
-      <div className="loading-overlay"></div>
-      <div className="loading-container">
-        <p className="loading-text">
+      <div className="loadingOverlay"></div>
+      <div className="loadingContainer">
+        <p className="loadingText">
           <span style={{ fontWeight: 500 }}>Uploading... </span>please wait
         </p>
-        <div className="progress-bar-container">
-          <div className="progress-bar"></div>
+        <div className="progressBarContainer">
+          <div className="progressBar"></div>
         </div>
       </div>
     </>
