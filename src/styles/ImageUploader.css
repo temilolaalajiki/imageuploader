@@ -10,7 +10,8 @@ body, #root, .App {
 }
 
 main {
-  flex: 1 1 auto;
+  /* flex: 1 1 auto; */
+  flex: none;
   display: flex;
   flex-direction: column;
   align-items: center;
