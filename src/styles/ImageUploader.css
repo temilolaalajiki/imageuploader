@@ -25,7 +25,7 @@ main {
 }
 
 .uploaderContainer {
-  background: #f8f9fa;
+  background: var(--background-color);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   padding: 1.5rem;
@@ -37,6 +37,11 @@ main {
   align-items: center;
   z-index: 2;
   position: relative;
+  color: var(--text-color);
+}
+
+body[data-theme="dark"] .uploaderContainer {
+  box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
 }
 
 .previewContainer {
@@ -283,7 +288,6 @@ main {
   border: none;
   background: none;
   cursor: pointer;
-  /* padding: 0; */
 }
 
 .browse-link:hover {
