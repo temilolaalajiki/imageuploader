@@ -152,6 +152,12 @@ body[data-theme="dark"] .uploaderContainer {
   background: #28a745;
 }
 
+ .uploadLink {
+    color: #007bff;
+    text-decoration: underline !important;
+    text-underline-offset: 5px !important;
+  }
+
 /* Mobile Responsive Styles */
 @media (max-width: 480px) {
   .uploaderContainer {
@@ -247,11 +253,6 @@ body[data-theme="dark"] .uploaderContainer {
     margin: 2rem auto;
   }
 
-  .browse-link {
-    text-decoration: underline !important;
-    text-underline-offset: 5px !important;
-  }
-
   .previewContainer {
     max-width: 500px;
     gap: 1rem;
@@ -276,7 +277,7 @@ body[data-theme="dark"] .uploaderContainer {
   }
 }
 
-/* .browse-link {
+/* .uploadLink {
   display: block;
   width: 100%;
   text-align: center;
@@ -290,6 +291,6 @@ body[data-theme="dark"] .uploaderContainer {
   cursor: pointer;
 } */
 
-.browse-link:hover {
+.uploadLink:hover {
   text-decoration: none;
 }
