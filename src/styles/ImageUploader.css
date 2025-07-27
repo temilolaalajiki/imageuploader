@@ -189,7 +189,7 @@ body[data-theme="dark"] .uploaderContainer {
   border-radius: 5px;
   padding: 50px;
   text-align: center;
-  cursor: pointer;
+  /* cursor: pointer; */
   transition: border-color 0.3s;
 }
 
@@ -276,7 +276,7 @@ body[data-theme="dark"] .uploaderContainer {
   }
 }
 
-.browse-link {
+/* .browse-link {
   display: block;
   width: 100%;
   text-align: center;
@@ -288,7 +288,7 @@ body[data-theme="dark"] .uploaderContainer {
   border: none;
   background: none;
   cursor: pointer;
-}
+} */
 
 .browse-link:hover {
   text-decoration: none;
