@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import './Toast.css';
 import checkIcon from '../assets/images/check.png';
 
-const Toast = ({ onClose }) => {
+const Toast = ({ onClose, message }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       onClose();
@@ -17,7 +17,7 @@ const Toast = ({ onClose }) => {
       <div className="toast-container">
         <div className="toast-message">
           <img src={checkIcon} alt="Success" />
-          <span>Link copied to clipboard!</span>
+          <span>{message}</span>
         </div>
       </div>
     </>

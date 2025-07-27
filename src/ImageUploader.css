@@ -1,4 +1,3 @@
-/* Layout root: take full viewport height, no scroll */
 body, #root, .App {
   min-height: 100vh;
   height: 100vh;

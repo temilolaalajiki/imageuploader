@@ -1,122 +1,133 @@
-const express = require('express');
-const cors = require('cors');
-const multer = require('multer');
-const cloudinary = require('cloudinary').v2;
-const rateLimit = require('express-rate-limit');
+const express = require("express");
+const cors = require("cors");
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
+const rateLimit = require("express-rate-limit");
 
-// Configure Cloudinary
+// Cloudinary Configuration
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true
+  secure: true,
 });
 
 const app = express();
 
-// Rate limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
-  message: 'Too many requests from this IP, please try again later.'
+  message: "Too many requests from this IP, please try again later.",
 });
 
 app.use(limiter);
 app.use(cors());
 
-// Configure multer for file upload
-const upload = multer({ 
+const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 2 * 1024 * 1024, // 2MB limit
-  }
+    fileSize: 2 * 1024 * 1024, 
+  },
 });
 
-// Upload endpoint
-app.post('/api/upload', upload.single('image'), async (req, res) => {
+// Upload
+app.post("/api/upload", upload.single("image"), async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded.' });
+      return res.status(400).json({ error: "No file uploaded." });
     }
 
-    const b64 = Buffer.from(req.file.buffer).toString('base64');
+    const b64 = Buffer.from(req.file.buffer).toString("base64");
     const dataURI = `data:${req.file.mimetype};base64,${b64}`;
-    
+
     const result = await cloudinary.uploader.upload(dataURI, {
-      resource_type: 'auto',
-      folder: 'imageuploader'
+      resource_type: "auto",
+      folder: "imageuploader",
     });
-    
+
     return res.status(200).json({
-      message: 'File uploaded successfully',
+      message: "File uploaded successfully",
       url: result.secure_url,
       filename: req.file.originalname,
       size: req.file.size,
-      public_id: result.public_id
+      public_id: result.public_id,
     });
   } catch (error) {
-    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
-      return res.status(500).json({ error: 'Cloudinary configuration is missing' });
+    if (
+      !process.env.CLOUDINARY_CLOUD_NAME ||
+      !process.env.CLOUDINARY_API_KEY ||
+      !process.env.CLOUDINARY_API_SECRET
+    ) {
+      return res
+        .status(500)
+        .json({ error: "Cloudinary configuration is missing" });
     }
     if (error.http_code === 400) {
-      return res.status(400).json({ error: 'Invalid file format or corrupt image' });
+      return res
+        .status(400)
+        .json({ error: "Invalid file format or corrupt image" });
     }
     if (error.http_code === 401) {
-      return res.status(401).json({ error: 'Invalid Cloudinary credentials' });
+      return res.status(401).json({ error: "Invalid Cloudinary credentials" });
     }
-    res.status(500).json({ error: 'An error occurred during upload.' });
+    res.status(500).json({ error: "An error occurred during upload." });
   }
 });
 
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK' });
+
+app.get("/api/health", (req, res) => {
+  res.json({ status: "OK" });
 });
 
-app.get('/api/download/:public_id', async (req, res) => {
+app.get("/api/download/:public_id", async (req, res) => {
   const { public_id } = req.params;
   const { filename } = req.query;
   if (!public_id) {
-    return res.status(400).json({ error: 'Public ID parameter is required' });
+    return res.status(400).json({ error: "Public ID parameter is required" });
   }
 
   try {
-    // Get the resource details from Cloudinary to obtain the URL
-    const resource = await cloudinary.api.resource(public_id, { resource_type: 'image' });
+    const resource = await cloudinary.api.resource(public_id, {
+      resource_type: "image",
+    });
     if (!resource || !resource.secure_url) {
-      return res.status(404).json({ error: 'File not found' });
+      return res.status(404).json({ error: "File not found" });
     }
 
-    // Determine filename with extension
     let downloadFilename = filename || public_id;
-    if (downloadFilename && !downloadFilename.includes('.')) {
-      // Append extension from resource format if missing
+    if (downloadFilename && !downloadFilename.includes(".")) {
       if (resource.format) {
-        downloadFilename += '.' + resource.format;
+        downloadFilename += "." + resource.format;
       } else if (resource.secure_url) {
-        const urlParts = resource.secure_url.split('.');
+        const urlParts = resource.secure_url.split(".");
         if (urlParts.length > 1) {
-          downloadFilename += '.' + urlParts[urlParts.length - 1].split('?')[0];
+          downloadFilename += "." + urlParts[urlParts.length - 1].split("?")[0];
         }
       }
     }
 
-    // Fetch the file from Cloudinary and pipe it to the response
-    const https = require('https');
-    https.get(resource.secure_url, (cloudinaryRes) => {
-      res.setHeader('Content-Type', cloudinaryRes.headers['content-type'] || 'application/octet-stream');
-      res.setHeader('Content-Disposition', `attachment; filename="${downloadFilename}"`);
-      cloudinaryRes.pipe(res);
-    }).on('error', (err) => {
-      res.status(500).json({ error: 'Error downloading file' });
-    });
+    const https = require("https");
+    https
+      .get(resource.secure_url, (cloudinaryRes) => {
+        res.setHeader(
+          "Content-Type",
+          cloudinaryRes.headers["content-type"] || "application/octet-stream"
+        );
+        res.setHeader(
+          "Content-Disposition",
+          `attachment; filename="${downloadFilename}"`
+        );
+        cloudinaryRes.pipe(res);
+      })
+      .on("error", (err) => {
+        res.status(500).json({ error: "Error downloading file" });
+      });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to download file' });
+    res.status(500).json({ error: "Failed to download file" });
   }
 });
 
-// Start server if not in production
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   const port = process.env.PORT || 3001;
   app.listen(port, () => console.log(`Server running on port ${port}`));
 }

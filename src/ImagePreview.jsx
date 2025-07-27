@@ -8,7 +8,6 @@ const ImagePreview = () => {
   const uploadedFile = location.state?.uploadedFile;
 
   if (!uploadedFile) {
-    // If no file, redirect to upload
     navigate('/');
     return null;
   }

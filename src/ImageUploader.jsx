@@ -30,6 +30,8 @@ const ImageUploader = () => {
         const error = rejectedFiles[0].errors[0];
         if (error.code === "file-too-large") {
           setError("The selected file is larger than 2MB!");
+        } else if (error.code === "file-invalid-type") {
+          setError("Unsupported File Format");
         } else {
           setError(`Error: ${error.message}`);
         }
@@ -96,6 +98,7 @@ const ImageUploader = () => {
     if (uploadedFile) {
       try {
         await navigator.clipboard.writeText(uploadedFile.url);
+        setToastMessage("Link Copied successfully!");
         setShowToast(true);
       } catch (err) {
         console.error("Failed to copy URL: ", err);
@@ -145,7 +148,7 @@ const ImageUploader = () => {
   return (
     <div className="uploaderContainer">
       {loading && <LoadingIndicator />}
-      {showToast && <Toast onClose={() => setShowToast(false)} />}
+      {showToast && <Toast message={toastMessage} onClose={() => setShowToast(false)} />}
       <div
         {...getRootProps({
           className: `dropFileArea ${isDragActive ? "active" : ""}`,

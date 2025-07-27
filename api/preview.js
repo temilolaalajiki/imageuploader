@@ -2,7 +2,7 @@ export default async function handler(req, res) {
   const { url } = req.query;
   
   if (!url) {
-    return res.status(400).json({ error: 'URL parameter is required' });
+    return res.status(400).json({ error: 'URL is required' });
   }
 
   try {
