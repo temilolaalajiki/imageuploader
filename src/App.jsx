@@ -7,7 +7,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import ImageUploader from "./ImageUploader";
-import "./App.css";
+import "./styles/App.css";
 import logo from "./assets/images/logo.png";
 import lightMode from "./assets/images/light-mode.png";
 import darkMode from "./assets/images/night-mode.png";

@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import axios from "axios";
-import "./ImageUploader.css";
+import "./styles/ImageUploader.css";
 import uploadIcon from "./assets/images/upload.png";
 import checkIcon from "./assets/images/check.png";
 import Toast from "./components/Toast";
@@ -107,21 +107,21 @@ const ImageUploader = () => {
   };
 
   const handleDownload = async () => {
-    if (!uploadedFile || !uploadedFile.url) {
-      console.error("No file URL available");
+    if (!uploadedFile || !uploadedFile.public_id) {
+      console.error("No file public_id available");
       return;
     }
 
     setIsDownloading(true);
     try {
-      const response = await fetch(uploadedFile.url);
+      const downloadUrl = `${API_BASE_URL}/api/download/${uploadedFile.public_id}`;
+      const response = await fetch(downloadUrl);
       if (!response.ok) throw new Error("Failed to fetch image");
 
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
 
-      const extension = uploadedFile.url.split(".").pop() || "png";
-      const filename = `image-${Date.now()}.${extension}`;
+      const filename = uploadedFile.filename || `image-${Date.now()}.png`;
 
       const link = document.createElement("a");
       link.href = blobUrl;

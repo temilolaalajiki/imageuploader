@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import './ImageUploader.css';
+import './styles/ImageUploader.css';
 
 const ImagePreview = () => {
   const location = useLocation();
