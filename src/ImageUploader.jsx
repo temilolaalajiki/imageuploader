@@ -114,27 +114,22 @@ const ImageUploader = () => {
 
     setIsDownloading(true);
     try {
-      // Fetch the image first
       const response = await fetch(uploadedFile.url);
       if (!response.ok) throw new Error("Failed to fetch image");
 
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);
 
-      // Get file extension from URL or fallback
       const extension = uploadedFile.url.split(".").pop() || "png";
       const filename = `image-${Date.now()}.${extension}`;
 
-      // Create download link
       const link = document.createElement("a");
       link.href = blobUrl;
       link.download = filename;
       document.body.appendChild(link);
 
-      // Trigger download
       link.click();
 
-      // Cleanup
       document.body.removeChild(link);
       window.URL.revokeObjectURL(blobUrl);
     } catch (error) {

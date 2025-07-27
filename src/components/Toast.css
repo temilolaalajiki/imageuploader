@@ -56,7 +56,6 @@
   }
 }
 
-/* Mobile responsiveness */
 @media (max-width: 480px) {
   .toast-container {
     width: 85%;

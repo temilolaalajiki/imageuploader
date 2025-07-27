@@ -1,4 +1,4 @@
-.loading-overlay {
+.loadingOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -63,7 +63,15 @@
   }
 }
 
-/* Dark mode styles */
+@media (prefers-color-scheme: light) {
+  .loading-container {
+    background: #ffffff;
+    box-shadow: 0 8px 16px rgba(248, 244, 244, 0.3) !important;
+  }
+}
+
+
+/* Dark mode */
 @media (prefers-color-scheme: dark) {
   .loading-container {
     background: #1a1a1a;
@@ -83,13 +91,13 @@
   }
 }
 
-/* Mobile responsiveness */
 @media (max-width: 480px) {
   .loading-container {
     width: 85%;
     height: 100px;
     padding: 1rem;
   }
+
 
   .progress-bar-container {
     width: 90%;

@@ -25,7 +25,7 @@ const ImagePreview = () => {
           <button
             onClick={() => {
               navigator.clipboard.writeText(uploadedFile.url)
-                .then(() => alert('Image data URL copied to clipboard!'))
+                .then(() => alert('Link Copied!'))
                 .catch(err => console.error('Failed to copy URL: ', err));
             }}
           >
